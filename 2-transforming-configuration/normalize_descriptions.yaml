@@ -1,0 +1,9 @@
+---
+- name: Normalize interface descriptions
+  hosts: all
+
+  tasks:
+    - name: fetch interfaces for each node from the output.json
+      include_vars:
+        file: output.json
+    - name: 

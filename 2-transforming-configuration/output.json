@@ -1,0 +1,41 @@
+{"hosts": [{"name": "cisco1",
+            "device_type": "IOSXR",
+            "mgmt_address": "192.168.1.1",
+            "version": "xxxxx",
+            "peers": [ {"remote_address": "198.51.100.2", "md5_key": "foobar"} ],
+            "interfaces":[ {"name": "Gi0/0/0/1",
+                            "description": "foobar",
+                            "sub_ints": [{"name": 100,
+                                          "description": "bar to foo",
+                                          "vlan": 100,
+                                          "ip_address": "198.51.100.1",
+                                          "subnet_mask": "255.255.255.0"},
+                                         {"name": 200,
+                                          "description": "foo to biz",
+                                          "vlan": 200,
+                                          "ip_address": "192.0.2.1",
+                                          "subnet_mask": "255.255.255.0"}
+                                        ]
+                           } ]
+           },
+           {"name": "juniper1",
+            "version": "xxxxx",
+            "device_type": "JUNOS",
+	    "mgmt_address": "192.168.2.2",
+            "peers": [ {"remote_address": "198.51.100.1", "md5_key": "foobar"} ],
+            "interfaces":[ {"name": "eth1",
+                            "description": "foobar",
+                            "sub_ints": [{"name": 100,
+                                          "description": "foo to bar",
+                                          "vlan": 100,
+                                          "ip_address": "198.51.100.2",
+                                          "subnet_mask": "255.255.255.0"},
+                                         {"name": 200,
+                                          "description": "foo to biz",
+                                          "vlan": 200,
+                                          "ip_address": "192.0.2.2",
+                                          "subnet_mask": "255.255.255.0"}
+                                        ]
+                           } ]
+           }]
+}

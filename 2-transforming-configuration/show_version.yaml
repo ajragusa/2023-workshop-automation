@@ -1,0 +1,39 @@
+---
+- name: Show version on the hosts
+  hosts: all
+  gather_facts: no
+
+  roles:
+    - Juniper.junos
+
+  collections:
+    - cisco.iosxr
+
+  tasks:
+    - name: "show version on IOSXR"
+      cisco.iosxr.iosxr_command:
+        commands: show version
+      register: result
+      when: device_type == "IOSXR"
+
+    - name: save result
+      set_fact:
+        output: "{{ result }}"
+      when: device_type == "IOSXR"
+
+    - name: show version on JUNOS
+      connection: local
+      juniper_junos_command:
+        commands:
+          - "show version"
+      register: result
+      when: device_type == "JUNOS"
+
+    - name: save result
+      set_fact:
+        output: "{{ result }}"
+      when: device_type == "JUNOS"
+
+    - name: print results
+      debug:
+        var: output
