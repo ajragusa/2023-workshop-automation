@@ -1,0 +1,11 @@
+{% for int in interfaces %}
+interface {{ int.name }}
+ description {{ int.description }}
+!
+{% for subint in int.sub_ints %}
+interface {{ int.name }}.{{ subint.vlan }}
+ description {{ subint.description }}
+!
+{% endfor %}
+{% endfor %}
+  

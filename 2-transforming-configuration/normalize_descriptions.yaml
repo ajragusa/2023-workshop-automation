@@ -1,9 +1,59 @@
 ---
 - name: Normalize interface descriptions
   hosts: all
+  gather_facts: no
+  
+  roles:
+    - Juniper.junos
+  collections:
+    - cisco.iosxr
+
+  vars:
+    hosts: "{{ lookup('file', 'output.json') | from_json }}"
 
   tasks:
-    - name: fetch interfaces for each node from the output.json
-      include_vars:
-        file: output.json
-    - name: 
+
+    - name: generate commands IOSXR for primary interfaces
+      set_fact:
+        interfaces: "{{ interfaces | default([]) + [ item ] }}"
+      when: device_type == "IOSXR"
+      loop: "{{ hosts | json_query(\"*[?name == '\" + inventory_hostname + \"'].interfaces[] | [0]\") }}"
+
+    - name: generate command JUNOS for primary interfaces
+      set_fact:
+        interfaces: "{{ commands | default([]) + [ item ] }}"
+      when: device_type == "JUNOS"
+      loop: "{{ hosts | json_query(\"*[?name == '\" + inventory_hostname + \"'].interfaces[] | [0]\") }}"
+
+    - name: Debug output
+      debug:
+        var: interfaces
+
+    - name: do template IOSXR
+      set_fact:
+        command: "{{ lookup('template', './cisco.j2') }}"
+      when: device_type == "IOSXR"
+
+    - name: do template JUNOS
+      set_fact:
+        command: "{{ lookup('template', './juniper.j2') }}"
+      when: device_type == "JUNOS"
+      
+    - name: Debug output
+      debug:
+        var: command
+
+#    - name: set interfaces IOSXR
+#      cisco.iosxr.iosxr_config:
+#        lines: "{{ item.description }}"
+#        parents: "interface {{ item.interface_name }}"
+#      loop: commands
+#      when: device_type == "IOSXR"
+
+#    - name: set interfaces JUNOS
+#      connection: local
+#      juniper_junos_config:
+#        load: 'merge'
+#        lines: "{{ commands }}"
+#        format: 'set'
+#      when: device_type == "JUNOS"
