@@ -16,18 +16,7 @@
     - name: generate commands IOSXR for primary interfaces
       set_fact:
         interfaces: "{{ interfaces | default([]) + [ item ] }}"
-      when: device_type == "IOSXR"
       loop: "{{ hosts | json_query(\"*[?name == '\" + inventory_hostname + \"'].interfaces[] | [0]\") }}"
-
-    - name: generate command JUNOS for primary interfaces
-      set_fact:
-        interfaces: "{{ commands | default([]) + [ item ] }}"
-      when: device_type == "JUNOS"
-      loop: "{{ hosts | json_query(\"*[?name == '\" + inventory_hostname + \"'].interfaces[] | [0]\") }}"
-
-    - name: Debug output
-      debug:
-        var: interfaces
 
     - name: do template IOSXR
       set_fact:
