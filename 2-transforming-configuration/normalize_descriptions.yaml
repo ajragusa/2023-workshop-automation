@@ -32,17 +32,16 @@
       debug:
         var: command
 
-#    - name: set interfaces IOSXR
-#      cisco.iosxr.iosxr_config:
-#        lines: "{{ item.description }}"
-#        parents: "interface {{ item.interface_name }}"
-#      loop: commands
-#      when: device_type == "IOSXR"
+    - name: set interfaces IOSXR
+      cisco.iosxr.iosxr_config:
+        src: "{{ command }}"
+      loop: commands
+      when: device_type == "IOSXR"
 
-#    - name: set interfaces JUNOS
-#      connection: local
-#      juniper_junos_config:
-#        load: 'merge'
-#        lines: "{{ commands }}"
-#        format: 'set'
-#      when: device_type == "JUNOS"
+    - name: set interfaces JUNOS
+      connection: local
+      juniper_junos_config:
+        load: 'merge'
+        lines: "{{ command }}"
+        format: 'set'
+      when: device_type == "JUNOS"
