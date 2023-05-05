@@ -14,13 +14,13 @@ inventory = {'all': {'vars': {'ansible_user': 'clab'}, 'children': {'junos': {'h
                                                                                                  'ansible_ssh_pass': 'clab@123',
                                                                                                  'ansible_connection': 'ansible.netcommon.network_cli'}}}}}
 
-for host in data['hosts']:
-    if(host['device_type'] == 'JUNOS'):
-        inventory['all']['children']['junos']['hosts'][host['name']] = {'ansible_host': host['mgmt_address'], 'device_type': 'JUNOS' }
-    elif(host['device_type'] == 'IOSXR'):
-        inventory['all']['children']['iosxr']['hosts'][host['name']] = {'ansible_host': host['mgmt_address'], 'device_type': 'IOSXR'}
+for host in data:
+    if(host['platform'] == 'juniper_junos'):
+        inventory['all']['children']['junos']['hosts'][host['name']] = {'ansible_host': host['ip'], 'device_type': 'JUNOS' }
+    elif(host['platform'] == 'cisco_xr'):
+        inventory['all']['children']['iosxr']['hosts'][host['name']] = {'ansible_host': host['ip'], 'device_type': 'IOSXR'}
     else:
-        inventory['all']['hosts'][host['name']] = {'ansible_host': host['mgmt_address']}
+        inventory['all']['hosts'][host['name']] = {'ansible_host': host['ip']}
 
 with open('inventory.yaml', 'w') as file:
     yaml.dump(inventory, file)

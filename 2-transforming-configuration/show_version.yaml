@@ -12,7 +12,7 @@
   tasks:
     - name: "show version on IOSXR"
       cisco.iosxr.iosxr_command:
-        commands: show version
+        commands: show interfaces
       register: result
       when: device_type == "IOSXR"
 

@@ -6,7 +6,7 @@
   roles:
     - Juniper.junos
   collections:
-    - cisco.iosxr
+    - cisco.ios
 
   vars:
     hosts: "{{ lookup('file', 'output.json') | from_json }}"
@@ -16,11 +16,11 @@
     - name: generate commands IOSXR for primary interfaces
       set_fact:
         interfaces: "{{ interfaces | default([]) + [ item ] }}"
-      loop: "{{ hosts | json_query(\"*[?name == '\" + inventory_hostname + \"'].interfaces[] | [0]\") }}"
+      loop: "{{ hosts | json_query(\"[?name == '\" + inventory_hostname + \"'].interfaces[]\") }}"
 
     - name: do template IOSXR
       set_fact:
-        command: "{{ lookup('template', './cisco.j2') }}"
+        command: "{{ lookup('template', './cisco2.j2') }}"
       when: device_type == "IOSXR"
 
     - name: do template JUNOS
@@ -33,9 +33,8 @@
         var: command
 
     - name: set interfaces IOSXR
-      cisco.iosxr.iosxr_config:
-        src: "{{ command }}"
-      loop: commands
+      cisco.ios.ios_interfaces:
+        config: "{{ command }}"
       when: device_type == "IOSXR"
 
     - name: set interfaces JUNOS
