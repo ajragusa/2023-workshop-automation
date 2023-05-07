@@ -21,7 +21,7 @@ python 2_add_customers_to_interfaces.py
 
 ### Answer
 
-The new `answers.json` will match the following, where {{x}} is your lab number:
+The newly outputted `answers.json` will match the following, where {{x}} is your lab number:
 
 ```
 [

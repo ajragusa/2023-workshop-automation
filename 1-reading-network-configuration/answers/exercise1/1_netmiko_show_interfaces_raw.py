@@ -1,9 +1,10 @@
+# pip install --user netmiko
 from netmiko import Netmiko
 
 username = "clab"
 password = "clab@123"
 device_type = "cisco_xr"
-hosts = ["172.16.1.2", "172.16.1.3"]
+hosts = ["172.16.30.2", "172.16.30.3"]
 command_to_run = "show int brief"
 
 for host in hosts:

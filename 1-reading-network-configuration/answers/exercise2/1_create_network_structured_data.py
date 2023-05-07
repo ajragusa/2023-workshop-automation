@@ -1,7 +1,5 @@
-# pip install --user pyyaml  # TODO
-# pip install --user textfsm  # TODO
-# pip install --user netmiko  # TODO
-# pip install --user ciscoconfparse  # TODO
+# pip install --user textfsm
+# pip install --user netmiko
 import json
 import yaml
 import csv
@@ -27,7 +25,7 @@ OUTPUT_FILENAME = "devices.json"
 # The real script
 def main():
 
-    with open(INPUT_FILENAME) as f:
+    with open("hosts.yaml") as f:
         #  This creates a list of dictionaries from a YAML file.
         #
         #  This will take the YAML file that looks similar to the following:
@@ -53,14 +51,7 @@ def main():
     parsed_data = []
     for host in hosts:
 
-        # Create the Netmiko connection with our host.
-        # Under the hood, "**host" looks like this:
-        # {
-        #    host: "172.16.1.2"
-        #    device_type: "cisco_xr"
-        #    username: "clab"
-        #    password: "clab@123"
-        # }
+        # Create the connection with our host.
         connection = netmiko.ConnectHandler(**host)
 
         try:
@@ -68,7 +59,7 @@ def main():
             # The functions that are called to obtain these are different based on if we are
             #   on a Cisco or Juniper device. We know ahead of time which hosts are going to
             #   which OS, so we will look and then collect data based on it.
-            if host["device_type"] == "fill me in!":  # TODO
+            if host["device_type"] == "cisco_xr":
                 # Call each helper function from below to collect the data.
                 data = {
                     "name": get_cisco_hostname(connection),
@@ -79,7 +70,7 @@ def main():
                     "interfaces": get_cisco_interfaces(connection)
                 }
 
-            elif host["device_type"] == "fill me in!":  # TODO
+            elif host["device_type"] == "juniper_junos":
                 # Call each helper function from below to collect the data.
                 data = {
                     "name": get_junos_hostname(connection),
@@ -90,7 +81,7 @@ def main():
                     "interfaces": get_junos_interfaces(connection)
                 }
             
-            # If the host is neither our Cisco nor Juniper OSs, then cause an error.
+            # If the host is neither our Cisco and Juniper OSs, then cause an error.
             else:
                 raise Exception(f"Device type {host['device_type']} not recognized.")
             
