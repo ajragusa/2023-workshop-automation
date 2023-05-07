@@ -10,7 +10,7 @@ data = json.load(f)
 f.close()
 
 inventory = {'all': {'vars': {'ansible_user': 'clab'}, 'children': {'junos': {'hosts': {}, 'vars': {'ansible_ssh_pass': 'clab123'}},
-                                                                  'iosxr': {'hosts':{}, 'vars': {'ansible_network_os': 'ios',
+                                                                  'iosxr': {'hosts':{}, 'vars': {'ansible_network_os': 'iosxr',
                                                                                                  'ansible_ssh_pass': 'clab@123',
                                                                                                  'ansible_connection': 'ansible.netcommon.network_cli'}}}}}
 
