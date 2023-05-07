@@ -1,0 +1,15 @@
+---
+#Bonus track to show you are cool :-)
+- name: Test to cisco
+  hosts: cisco
+  gather_facts: no
+
+  collections:
+    - cisco.iosxr
+
+  tasks:
+
+    - name: Change description
+      cisco.iosxr.iosxr_config:
+        lines: hostname I_am_cool
+      when: "'cisco_2' in inventory_hostname"

@@ -1,0 +1,31 @@
+---
+- name: Retrieve Router Configurations
+  hosts: all
+  gather_facts: no
+
+  collections:
+    - cisco.iosxr
+
+  roles:
+    - Juniper.junos
+
+  tasks:
+    - name: Retrieve Configuration from Cisco Routers
+      cisco.iosxr.iosxr_command:
+        commands:
+          - show running-config
+      register: router_config
+      when: device_type == "IOSXR"
+
+    - name: Save Cisco Configuration to File
+      copy:
+        content: "{{ router_config.stdout[0] }}"
+        dest: "$HOME/{{ inventory_hostname }}.cfg"
+      when: device_type == "IOSXR"
+
+    - name: Retrieve configuration and copy to a file for Juniper
+      connection: local
+      juniper_junos_config:
+        retrieve: "committed"
+        dest: "$HOME/{{ inventory_hostname }}.cfg"
+      when: device_type == "JUNOS"

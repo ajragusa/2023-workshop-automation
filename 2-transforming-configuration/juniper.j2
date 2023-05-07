@@ -1,0 +1,10 @@
+{% for int in interfaces %}
+set interfaces {{ int.name }} description "Customer: {{ int.customer | default('NONE')}} Physical connection"
+{% for subint in int.sub_ints %}
+{% if subint.vlan == "" %}
+set interfaces {{ int.name }} unit 0 description "Customer: {{ subint.customer | default('NONE') }} VLAN: untagged"
+{% else %}
+set interfaces {{ int.name }} unit {{ subint.vlan }} description "Customer: {{ subint.customer | default('NONE') }} VLAN: {{ subint.vlan }}"
+{% endif %}
+{% endfor %}
+{% endfor %}

@@ -1,0 +1,11 @@
+{% for int in interfaces %}
+interface {{ int.name }}
+ description "Customer: {{ int.customer | default("NONE") }} Physical connection"
+!
+{% for subint in int.sub_ints %}
+interface {{ int.name }}.{{ subint.vlan }}
+ description "Customer: {{ subint.customer | default("NONE") }} VLAN: {{ subint.vlan }}" 
+!
+{% endfor %}
+{% endfor %}
+  

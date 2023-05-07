@@ -1,0 +1,31 @@
+---
+#Bonus track to see the interface of the juniper
+- name: Move VLANs between Cisco1 Juniper
+  hosts: all
+  gather_facts: no
+
+  vars:
+    cisco_interface: "Gi0/0/0/0"
+    juniper_interface: "eth1"
+    cisco_interface_new: "Gi0/0/0/1"
+    cisco2_interface_new: "Gi0/0/0/0"
+
+  collections:
+    - cisco.iosxr
+    - junipernetworks.junos
+
+  roles:
+    - Juniper.junos
+
+  tasks:
+    - name: Show config of the juniper interface
+      connection: local
+      juniper_junos_command:
+        commands: "show configuration interfaces {{ juniper_interface }}"
+      register: juniper_interface_info
+      when: "'juniper' in inventory_hostname"
+
+    - name: Print Juniper command output
+      debug:
+        var: juniper_interface_info.stdout_lines
+      when: "'juniper' in inventory_hostname"

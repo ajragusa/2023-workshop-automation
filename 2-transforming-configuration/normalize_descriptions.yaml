@@ -1,0 +1,46 @@
+---
+- name: Normalize interface descriptions
+  hosts: all
+  gather_facts: no
+  
+  roles:
+    - Juniper.junos
+  collections:
+    - cisco.ios
+
+  vars:
+    hosts: "{{ lookup('file', 'output.json') | from_json }}"
+
+  tasks:
+
+    - name: generate commands IOSXR for primary interfaces
+      set_fact:
+        interfaces: "{{ interfaces | default([]) + [ item ] }}"
+      loop: "{{ hosts | json_query(\"[?name == '\" + inventory_hostname + \"'].interfaces[]\") }}"
+
+    - name: do template IOSXR
+      set_fact:
+        command: "{{ lookup('template', './cisco2.j2') }}"
+      when: device_type == "IOSXR"
+
+    - name: do template JUNOS
+      set_fact:
+        command: "{{ lookup('template', './juniper.j2') }}"
+      when: device_type == "JUNOS"
+      
+    - name: Debug output
+      debug:
+        var: command
+
+    - name: set interfaces IOSXR
+      cisco.ios.ios_interfaces:
+        config: "{{ command }}"
+      when: device_type == "IOSXR"
+
+    - name: set interfaces JUNOS
+      connection: local
+      juniper_junos_config:
+        load: 'merge'
+        lines: "{{ command }}"
+        format: 'set'
+      when: device_type == "JUNOS"
