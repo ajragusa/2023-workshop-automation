@@ -1,0 +1,31 @@
+---
+- name: Get the list of VLAN numbers on a Juniper interface
+  hosts: all
+  gather_facts: no
+
+  vars:
+    juniper_interface: "eth1"
+
+  roles:
+    - Juniper.junos
+
+  tasks:
+    - name: Get VLANs on Juniper eth1 interface
+      connection: local
+      juniper_junos_command:
+        commands: "show configuration interfaces {{ juniper_interface }}"
+      register: juniper_interface_info
+      when: "'juniper' in inventory_hostname"
+
+    
+    - name: Extract VLAN numbers from interface
+      connection: local
+      set_fact:
+        vlan_numbers: "{{ vlan_numbers | default([]) + [item.split()[1]] }}"
+      loop: "{{ juniper_interface_info.stdout_lines | select('match', '^    vlan-id ') | list }}"
+      when: "'juniper' in inventory_hostname"
+
+    - name: Print Juniper command output
+      debug:
+        var: vlan_numbers
+      when: "'juniper' in inventory_hostname"

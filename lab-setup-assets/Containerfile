@@ -1,0 +1,41 @@
+# Slim Ubuntu container with python 3.9 and pip pre-installed
+FROM python:3.9.16-slim-bullseye
+
+# Install additional packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    sudo \
+    locales-all \
+    openssh-server \
+    iproute2 \
+    net-tools \
+    iputils-ping \
+    traceroute \
+    pip \
+    vim nano emacs
+
+# Create user account "lab" for workshop participant
+RUN adduser --gecos "" lab && usermod -aG sudo lab
+
+# Extend PATH so all our new packages run easier
+RUN export PATH=$PATH:/sbin:/usr/sbin
+
+# Set the user's password via environment variable. Passwords must be set
+# to allow login.
+# Note: These variable was pre-defined by the lab orchestrator
+ENV CX23_LAB_PASSWORD=
+
+# Create an RSA key, required for SSH server.
+RUN ssh-keygen -A
+
+# Pre-provision filepath required for SSH server.
+RUN mkdir -p /run/sshd
+
+# Open port 22 for SSH
+EXPOSE 22
+
+# Prepare post-init script.
+COPY ./workshop-init.sh /workshop-init.sh
+RUN chmod +x /workshop-init.sh
+
+# Configure sshd as root process. If sshd terminates for some reason, the container will too.
+ENTRYPOINT ["/workshop-init.sh"]

@@ -1,0 +1,12 @@
+device,interface,customer
+cisco1,Loopback1,Acme Corporation
+cisco1,MgmtEth0/RP0/CPU0/0,Beta Industries
+cisco1,GigabitEthernet0/0/0/0,Gamma Enterprises
+cisco1,GigabitEthernet0/0/0/1,Delta Dynamics
+cisco1,GigabitEthernet0/0/0/1.100,Epsilon Electronics
+cisco1,GigabitEthernet0/0/0/1.200,Zeta Zoological
+cisco1,GigabitEthernet0/0/0/2,Eta Enterprises
+juniper1,eth1.0,Theta Technologies
+juniper1,eth1.100,Iota Innovations
+juniper1,eth1.200,Kappa Kinetics
+juniper1,eth2.0,Lambda Labs
